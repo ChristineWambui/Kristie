@@ -1,8 +1,9 @@
 
+
 <?php
 
 include('config.php');
-include('department.php');
+
 
    
 session_start();
@@ -48,12 +49,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 <script>
-	function changedepartment(){
-	
-	var txt = document.getElementById("input").value;
-	document.getElementById("project").innerHTML = txt";
-		
-	}
+//function setColor(btn){
+  
+   // var property = document.getElementById(btn);
+    //if (property){
+        //property.style.backgroundColor = "red"
+       // property.innerHTML= "Applied"
+                
+    //}
+//}
 
 </script>
 </head>
@@ -162,8 +166,9 @@ desired effect
                   <?php
 				  }
 				  ?>
-				</ul>
-				</li>
+				  </ul>
+				  </li>
+
               <li class="footer"><a href="#">View all</a></li>
             </ul>
           </li>
@@ -277,262 +282,64 @@ desired effect
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                    <th>Department</th>
-                    <th>Action</th>
-                    <th>Status</th>
-                    
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-				   <?php
-				   
-		            if(retrievedepartment()>0)
-					{
-						foreach(retrievedepartment() as $department)
+                <?php
+				
+					
+						function retrieverecords()
 						{
 							
-					?>
-                    <td id="project"><?php echo $department['departmentname'];?></td>
-                    <td>
-					<?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission AND departmentid = 1";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<a href = "projectapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-						break;
 						
-						case 1:
-						echo ' ';
-						break;
+						foreach($_SESSION as $admission){
+						$MyAdmission = $admission;};
+						global $connection;
+						$results=array();
+						$selectprogress="SELECT*FROM project_progress WHERE admission = '$MyAdmission'";
+						$progressresult=mysqli_query($connection,$selectprogress);
+						if(mysqli_num_rows($progressresult)>0)
+						{
+							while($rows=mysqli_fetch_array($progressresult))
+								{
+									$results[]=$rows;
+								}
+						return $results;
+						}
+	
+						}
 						
-						case 2:
-						echo ' ';
-						break;
-						
-						default:
-						echo '<a href = "projectapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-					}
-					
-					
-					?>
-					
-						
-					</td>
-                    <td>
-					<?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission AND departmentid = 1";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<span class="label label-danger"><a style="color:black;"href="clear.php">denied</a></span>';
-						break;
-						
-						case 1:
-						echo '<span  class= "label label-success"><a style="color:black;"href ="clear.php">cleared</a></span>';
-						break;
-						
-						case 2:
-						echo '<span class = "label label-warning">pending</span>';
-						break;
-						
-						default:
-						echo '<span class = "label label-default">not applied</span>';
-					}
-					
-					
-					?>
-					
-					</td>
-                  </tr>
-                 <tr>
-                    <td>Exams</td>
-                    
-                    <td><?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission AND departmentid = 2";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<a href = "examapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-						break;
-						
-						case 1:
-						echo ' ';
-						break;
-						
-						case 2:
-						echo ' ';
-						break;
-						
-						default:
-						echo '<a href = "examapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-					}
-					
-					
-					?></td>
-                    <td><?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission  AND departmentid = 2";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<span class="label label-danger">denied</span>';
-						break;
-						
-						case 1:
-						echo '<a href="clear.php">cleared</a>';
-						break;
-						
-						case 2:
-						echo '<span class = "label label-warning">pending</span>';
-						break;
-						
-						default:
-						echo '<span class = "label label-default">not applied</span>';
-					}
-					
-					
-					?></td>
-                  </tr>
-                  <tr>
-                    <td>Accounts</td>
-                    <td><?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission AND departmentid = 3";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<a href = "accountsapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-						break;
-						
-						case 1:
-						echo ' ';
-						break;
-						
-						case 2:
-						echo ' ';
-						break;
-						
-						default:
-						echo '<a href = "accountsapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-					}
-					
-					
-					?></td>
-                    <td><?php
-					
-					$get = " SELECT status FROM clear WHERE admission =$admission AND departmentid = 3";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<span class="label label-danger">denied</span>';
-						break;
-						
-						case 1:
-						echo '<span class= "label label-success">cleared</span>';
-						break;
-						
-						case 2:
-						echo'<span class = "label label-warning">pending</span>';
-						break;
-						
-						default:
-						echo '<span class = "label label-default">not applied</span>';
-					}
-					
-					
-					?></td>
-                  </tr>
-                  <tr>
-                    <td>Administration</td>
-                    <td><?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission AND departmentid = 4";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<a href = "adminapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-						break;
-						
-						case 1:
-						echo ' ';
-						break;
-						
-						case 2:
-						echo ' ';
-						break;
-						
-						default:
-						echo '<a href = "adminapply.php"  id = "btn" class="btn btn-sm btn-info btn-flat pull-left"  >Apply</a>';
-					}
-					
-					
-					?></td>
-                    <td><?php
-					
-					$get = " SELECT status FROM clear WHERE admission = $admission AND departmentid = 4";
-					$getquery = mysqli_query($connection,$get);
-					$statusarray = mysqli_fetch_array($getquery);
-					$name = $statusarray[0];
-					
-					switch($name)
-					{
-						case 3:
-						echo '<span class="label label-danger"><a style="color:black;"href="adminclear.php">denied</a></span>';
-						break;
-						
-						case 1:
-						echo '<span  class= "label label-success"><a style="color:black;"href ="adminclear.php">cleared</a></span>';
-						break;
-						
-						case 2:
-						echo '<span class = "label label-warning">pending</span>';
-						break;
-						
-						default:
-						echo '<span class = "label label-default">not applied</span>';
-					}
-					
-					
-					?></td>
-                  </tr>
-                  </tbody>
-                </table>
+				
+				foreach(retrieverecords() as $record)
+				  {
+					  ?>
+				
+						<form action="" method="POST">
+						<div class="form-group">
+				<label for="fullname">Admission</label>
+				<p class="form-control" id="admission"><?php echo $record['admission'];?></p>
+				</div>
+				<div class="form-group">
+				<label for="email">Fullname</label>
+				<p class="form-control" id="fullname"><?php echo $record['fullname'];?></p>
+				</div>
+  
+				<div class="form-group">
+				<label for="pwd">User Interface</label>
+				<p  class="form-control" id="email"><?php echo  $record['userinterface'];?></p>
+				</div>
+				
+				<div class="form-group">
+				<label for="pwd">Functionality</label>
+				<p class="form-control" id="email"><?php echo  $record['functionality'];?></p>
+				</div>
+				
+				<div class="form-group">
+				<label for="pwd">Message</label>
+			    <p class="form-control" id="email"><?php echo  $record['message'];?></p>
+				</div>
+				</form>
+				<?php
+				  }
+				  ?>
+                 
               </div>
               <!-- /.table-responsive -->
             </div>
@@ -612,9 +419,7 @@ desired effect
 		//  }
     
 
-}
-	  
-	  }
+
    else 
    {
  
@@ -625,9 +430,7 @@ desired effect
       </script>";
   
   
-   }
-	  
-	  
+    }
 
   
 

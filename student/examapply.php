@@ -22,9 +22,12 @@ function apply()
 	$names = mysqli_fetch_array($namequery);
 	foreach ($names as $name){}
 	
+	$retrievedep = "SELECT departmentname FROM deparment WHERE role = 2";
+	$depquery = mysqli_query($connection,$retrievedep);
+	$dep= mysqli_fetch_array($depquery);
+	foreach ($dep as $department){}
 	
-	
-	$applyfirst ="INSERT INTO clear(departmentid,admission,datetime,status,userid,studentname)VALUES(2,'".$admission."',NOW(),2,2,'".$name."')";
+	$applyfirst ="INSERT INTO clear(departmentid,departmentname,admission,datetime,status,userid,studentname)VALUES(2,'".$department."','".$admission."',NOW(),2,2,'".$name."')";
 	$projectapplyfirst = mysqli_query($connection,$applyfirst)or die(mysqli_error($connection));
 	if($projectapplyfirst)
 	{

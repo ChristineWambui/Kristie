@@ -225,16 +225,8 @@ desired effect
         </div>
       </div>
 
-      <!-- search form (Optional)
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>  -->
+      <!--search form (Optional)-->
+     
       <!-- /.search form -->
 
       <!-- Sidebar Menu -->
@@ -283,7 +275,15 @@ desired effect
 
      <!-- table -->
     <div class="box box-info">
-            
+    <form action="" method="post" class="form">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form> 
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
@@ -318,10 +318,96 @@ desired effect
                     <td><?php echo $cleared['admission']; ?></td>
                     <td><?php echo $cleared['studentname']; ?></td>
                     <td><?php echo $cleared['datetime']; ?></td>
-					<td>Project</td>
-					<td><button class="btn btn-success">Access Performance Sheet</button></td>
+					<td>
+					<?php switch($cleared['departmentid'])
+					{
+						case 1:
+						echo 'Project';
+						break;
+						
+						case 2:
+						echo 'Exams';
+						break;
+						
+						case 3:
+						echo 'Accounts';
+						break;
+						
+						default:
+						echo 'Adminstration';
+          }
+          
+
+          if(isset($POST['search']))
+	{
+	   $searchq = $_POST['search'];
+	   $searchq = preg_replace("#[^0-9a-z]#i","",$searchq);
+	
+	  
+	  $query = "SELECT * FROM clear WHERE departmentid LIKE '%searchq%'";
+	  $searchquery = mysqli_query($connection,$query)or die("couldnt search!");
+	  $count = mysql_num_rows($query);
+	  if($count == 0)
+	  {
+		  $output = 'There was no search results!';
+	  }
+	  else
+	{
+		while($row=mysqli_fetch_array($query))
+			{
+				$result[]=$row;
+      }
+  }
+  }
+					?>
+					</td>
+					<td><a href="<?php echo $cleared['admission']?>" type="button" class="btn btn-success" data-toggle="modal" data-target="#Modal<?php echo $cleared['admission'];?>">Access Performance</a></td>
 					</tr>
-          <?php
+
+          
+        <div id="Modal<?php echo $cleared['admission']?>" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Register</h4>
+            </div>
+            <div class="modal-body">
+          <form action="form.php" method="POST">
+        <div class="form-group">
+          <label for="fullname">Fullname:</label>
+          <input type="text" name="fullname" required="" class="form-control" id="email">
+        </div>
+        <div class="form-group">
+          <label for="course">Course</label>
+          <input type="text" name="course" required="" class="form-control" id="pwd">
+        </div>
+        
+          <div class="form-group">
+          <label for="pwd">Admission No:</label>
+          <input type="text"  name="admin" required="" class="form-control" id="pwd">
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input style="color:black;" type="password" name="pwd" required="" class="form-control" id="pwd">
+
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox"> Remember me</label>
+        </div>
+        <button onclick=password() type="submit" class="btn btn-default">Submit</button>
+      </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+      
+        </div>
+      </div>
+     </div>
+     <?php
 		  }
 		  }
 		  ?>
@@ -332,6 +418,8 @@ desired effect
         </div>
 
 
+
+       
 				</tr>
         
            
@@ -393,6 +481,6 @@ desired effect
      fixed layout. -->
 </body>
 </html>
-	<?php
-	}
-	?>
+<?php
+  }
+?>

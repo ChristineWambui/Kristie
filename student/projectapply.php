@@ -20,8 +20,13 @@ function apply()
 	$namequery = mysqli_query($connection,$retrievename);
 	$names = mysqli_fetch_array($namequery);
 	foreach ($names as $name){}
+
+	$retrievedep = "SELECT departmentname FROM deparment WHERE role = 1";
+	$depquery = mysqli_query($connection,$retrievedep);
+	$dep= mysqli_fetch_array($depquery);
+	foreach ($dep as $department){}
 	
-	$applyfirst ="INSERT INTO clear(departmentid,admission,userid,datetime,status,studentname)VALUES(1,'".$admission."',1,NOW(),2,'".$name."')";
+	$applyfirst ="INSERT INTO clear(departmentid,departmentname,admission,userid,datetime,status,studentname)VALUES(1,'".$department."','".$admission."',1,NOW(),2,'".$name."')";
 	$projectapplyfirst = mysqli_query($connection,$applyfirst)or die(mysqli_error($connection));
 	if($projectapplyfirst)
 	{

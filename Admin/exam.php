@@ -357,7 +357,7 @@ desired effect
                   <h4 class="modal-title">Exam Progress</h4>
                 </div>
                 <div class="modal-body">
-              <form action="project.php" method="POST">
+              <form action="exam.php" method="POST">
 			  
 			
             <div class="form-group">
@@ -417,7 +417,7 @@ desired effect
 	  $message = $_POST['message'];
       $denyquery="UPDATE clear SET status = 3 WHERE admission = $admission AND departmentid = 2";
 	  $insertprogress ="INSERT INTO exam_progress(admission,fullname,cat,exam,practical,message)VALUES('$admission','$fullname','$cat','$','$message')";
-	  $insertmessage = "INSERT INTO notifications(admission,message,status,date,departmentid)VALUES('$admission','$message',1,NOW(),1)";
+	  $insertmessage = "INSERT INTO notifications(admission,message,status,date,departmentid)VALUES('$admission','$message',1,NOW(),2)";
       $denyresults=mysqli_query($connection,$denyquery);
       $messageresults=mysqli_query($connection,$insertmessage);
       $progressresults=mysqli_query($connection,$insertprogress);
@@ -439,12 +439,21 @@ desired effect
         }
         
         //perform clear here
-          if(isset($_GET['clearstudent']))
+        if(isset($_POST['clearbutton']))
         {
-      $clearadmission = $_GET['clearstudent'];
-      $clearquery="UPDATE clear SET status = 1 WHERE admission = $clearadmission AND departmentid = 2";
+      $admission = $_POST['admission'];
+      $fullname = $_POST['fullname'];
+      $functionality = $_POST['func'];
+      $userinterface = $_POST['UI'];
+      $completion = $_POST['completion'];
+      $message= $_POST['message'];
+      $clearquery="UPDATE clear SET status = 1 WHERE admission = $admission AND departmentid = 2";
+	  $insertmessage = "INSERT INTO notifications(admission,message,status,date,departmentid)VALUES('$admission','$message',1,NOW(),2)";
+	  $insertprogress ="INSERT INTO project_progress(admission,fullname,userinterface,functionality,message)VALUES('$admission','$fullname','$userinterface','$functionality','$message')";
       $clearresults=mysqli_query($connection,$clearquery);
-      if($clearresults)
+	  $notify = mysqli_query($connection,$insertmessage);
+	  $progressresults =mysqli_query($connection,$insertprogress);
+      if($progressresults)
       {
         echo "<script>
         alert('student cleared');
@@ -455,14 +464,14 @@ desired effect
       else{
          echo "<script>
         alert('unable to clear');
-        window.location.href='exam.php';
+		window.location,href = 'exam.php';
         </script>
         ";
         }
         }
         }
-			   
-		  }
+      }
+    }
 		  else{
 			  
 			  echo "<tr><td>No students applied</tr></td>";

@@ -310,59 +310,164 @@ desired effect
                     <td><?php echo $myAdmissions['studentname']; ?></td>
           
                    
-                    <td><a href="?clearstudent=<?php echo $myAdmissions['admission'];?>" type="button" class="btn btn-success">clear</a>
-                     <a href="?denystudent=<?php echo $myAdmissions['admission'];?>" type="button" class="btn btn-danger">deny</a></td>
+                    <td><a href="<?php echo $myAdmissions['admission']?>" type="button" class="btn btn-danger" data-toggle="modal" data-target="#Modal<?php echo $myAdmissions['admission'];?>">progress</a></td>
                   </tr>
+                	<?php
+			  
+						function retrieveaccounts()
+						{
+							
+						foreach(retrievependingadmission() as $myAdmissions)
+						{
+					    $myadmission = $myAdmissions['admission'];}
+						global $connection;
+						$select="SELECT * FROM accounts WHERE admission = $myadmission";
+						$selectresult=mysqli_query($connection,$select);
+						$result=array();
+						if(mysqli_num_rows($selectresult)>0)
+						{
+							while($row=mysqli_fetch_array($selectresult))
+								{
+									$result[]=$row;
+								}
+						return $result;
+						}
+	
+						}
+						
+				
+				foreach(retrieveaccounts() as $accounts)
+				  {
+			  
+			  ?>
+
+
+                  <div id="Modal<?php echo $myAdmissions['admission']?>" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+          
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Exam Progress</h4>
+                </div>
+                <div class="modal-body">
+              <form action="accounts.php" method="POST">
+			  
+			
+            <div class="form-group">
+              <label for="fullname">Admission:</label>
+              <input type="text" name="admission" value="<?php echo $myAdmissions['admission'];?>" required="" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+              <label for="course">FullName:</label>
+              <p><input type="text" name="fullname" value="<?php echo $myAdmissions['studentname'];?>" required="" class="form-control" id="pwd"></p>
+            </div>
+
+            <div class="form-group">
+              <label for="course">Course:</label>
+              <p><input type="text" name="course" value="<?php echo $accounts['course'];?>" required="" class="form-control" id="pwd"></p>
+            </div>
+            
+              <div class="form-group">
+              <label for="pwd">Amount Paid:</label>
+              <p><input type="text"  value="<?php echo $accounts['amountpaid'];?>" name="amountpaid" required="" class="form-control" id="pwd"></p>
+            </div>
+            <div class="form-group">
+              <label for="password">Exam:</label>
+              <p><input style="color:black;" value="<?php echo $accounts['balance'];?>" name="balance" type="text" name="pwd" required="" class="form-control" id="pwd"></p>
+
+            </div>
+			
+			<div class="form-group">
+              <label for="password">Message:</label>
+             <input style="color:black;" type="text" name="message" required="" class="form-control" id="pwd">
+			 
+            </div>
+			
+			<button type="submit" name="clearbutton" class="btn btn-success">clear</button>
+            <button type="submit" name="denybutton" class="btn btn-danger">deny</button>
+			<a href="#" onclick="window.print();"><i class="glyphicon glyphicon-print"></i>Print</a>
+       
+          </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+          
+            </div>
+          </div>
+        </div>
            <?php
             
     
     //perform deny here
-          if(isset($_GET['denystudent']))
-        {
-      $denyadmission = $_GET['denystudent'];
-      $denyquery="UPDATE clear SET status = 3 WHERE admission = $denyadmission AND departmentid = 3";
-      $denyresults=mysqli_query($connection,$denyquery);
-      if($denyresults)
-      {
-        echo "<script>
-        alert('student denied clearance');
-        window.location.href='accounts.php';
-        </script>
-        ";
+    if(isset($_POST['denybutton']))
+    {
+  $admission = $_POST['admission'];
+  $fullname = $_POST['fullname'];
+  $amountpaid = $_POST['amountpaid'];
+  $course = $_POST['course'];
+  $balance= $_POST['balance'];
+  $message = $_POST['message'];
+  $denyquery="UPDATE clear SET status = 3 WHERE admission = $admission AND departmentid = 3";
+  $insertprogress ="INSERT INTO accounts_progress(admission,fullname,course,amountpaid,balance,message)VALUES('$admission','$fullname','$course','$amountpaid','$balance','$message')";
+  $insertmessage = "INSERT INTO notifications(admission,message,status,date,departmentid)VALUES('$admission','$message',1,NOW(),3)";
+  $denyresults=mysqli_query($connection,$denyquery);
+  $messageresults=mysqli_query($connection,$insertmessage);
+  $progressresults=mysqli_query($connection,$insertprogress);
+  if($denyresults)
+  {
+    echo "<script>
+    alert('student denied clearance');
+    window.location.href='accounts.php';
+    </script>
+    ";
+  }
+  else{
+     echo "<script>
+    alert('denial unsuccessful');
+    window.location.href='accounts.php';
+    </script>
+    ";
+    }
+    }
+    
+    //perform clear here
+    if(isset($_POST['clearbutton']))
+    {
+      $admission = $_POST['admission'];
+      $fullname = $_POST['fullname'];
+      $amountpaid = $_POST['amountpaid'];
+      $course = $_POST['course'];
+      $balance= $_POST['balance'];
+      $message = $_POST['message'];
+      $clearquery="UPDATE clear SET status = 1  WHERE admission = $admission AND departmentid = 3";
+      $insertprogress ="INSERT INTO accounts_progress(admission,fullname,course,amountpaid,balance,message)VALUES('$admission','$fullname','$course','$amountpaid','$balance','$message')";
+      $insertmessage = "INSERT INTO notifications(admission,message,status,date,departmentid)VALUES('$admission','$message',1,NOW(),3)";
+  $clearresults=mysqli_query($connection,$clearquery);
+$notify = mysqli_query($connection,$insertmessage);
+$progressresults =mysqli_query($connection,$insertprogress);
+  if($progressresults)
+  {
+    echo "<script>
+    alert('student cleared');
+    window.location.href='accounts.php';
+    </script>
+    ";
+  }
+  else{
+     echo "<script>
+    alert('unable to clear');
+window.location,href = 'accounts.php';
+    </script>
+    ";
+    }
+    }
+  }
+        }
       }
-      else{
-         echo "<script>
-        alert('denial unsuccessful');
-        window.location.href='accounts.php';
-        </script>
-        ";
-        }
-        }
-        
-        //perform clear here
-          if(isset($_GET['clearstudent']))
-        {
-      $clearadmission = $_GET['clearstudent'];
-      $clearquery="UPDATE clear SET status = 1 WHERE admission = $clearadmission AND departmentid = 3";
-      $clearresults=mysqli_query($connection,$clearquery);
-      if($clearresults)
-      {
-        echo "<script>
-        alert('student cleared');
-        window.location.href='accounts.php';
-        </script>
-        ";
-      }
-      else{
-         echo "<script>
-        alert('unable to clear');
-        window.location.href='accounts.php';
-        </script>
-        ";
-        }
-        }
-        }
-		  }
+    
 		  else{
 			  
 			  echo "<td><tr>No records found </tr></td>";
@@ -427,9 +532,6 @@ desired effect
 </html>
 <?php
 }
-
-
-
    else 
    {
  

@@ -361,12 +361,92 @@ desired effect
                     <td><?php echo $mystudents['fullname']; ?></td>
                     <td><?php echo $mystudents['course']; ?></td>
                     <td><?php echo $mystudents['datetime']; ?></td>
-					<td><button class="btn btn-success">Update</button>
-						<button class="btn btn-danger">Delete</button></td>
+					<td><a href="<?php echo $mystudents['admission']?>" type="button" class="btn btn-success" data-toggle="modal" data-target="#Modal<?php echo $mystudents['admission'];?>">update</a>
+          <a href="?denystudent=<?php echo $mystudents['admission'];?>" type="button" class="btn btn-danger">delete</a></td>
 					</tr>
+
+
+          <div id="Modal<?php echo $mystudents['admission']?>" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+          
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Update</h4>
+                </div>
+                <div class="modal-body">
+              <form action="superadminretrieve.php" method="POST">
+            <div class="form-group">
+              <label for="fullname">Admission:</label>
+              <input type="text" name="admission" value="<?php echo $mystudents['admission'];?>" required="" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+              <label for="course">FullName:</label>
+              <input type="text" name="fullname" value="<?php echo $mystudents['fullname'];?>" required="" class="form-control" id="pwd">
+            </div>
+            
+              <div class="form-group">
+              <label for="pwd">Course:</label>
+              <input type="text"  name="course" required="" class="form-control" id="pwd">
+            </div>
+            <div class="form-group">
+              <label for="password">Date registered:</label>
+              <input style="color:black;" name="dateregistered" type="text" name="pwd" required="" class="form-control" id="pwd">
+
+            </div>
+		
+			<button type="submit" name="updatebutton"class="btn btn-success">Update</button>
+			<a href="#" onclick="window.print();"><i class="glyphicon glyphicon-print"></i>Print</a>
+       
+          </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+          
+            </div>
+          </div>
+        </div>
           <?php
-		  }
-		  }
+		  
+         }
+         
+         if(isset($POST['updatebutton']))
+         {
+           $admission = $_POST['admission'];
+            
+         }
+		    
+		  }else
+		  {
+			  echo "<script>
+			  alert('No records found');
+			  window.href.location('superadmin.php');
+			  </script>";
+      }
+      
+      if(isset($_GET['denystudent']))
+      {
+    $denyadmission = $_GET['denystudent'];
+    $denyquery="DELETE FROM student WHERE admission = $denyadmission";
+    $denyresults=mysqli_query($connection,$denyquery);
+    if($denyresults)
+    {
+      echo "<script>
+      alert('student deleted');
+      window.location.href='superadmin.php';
+      </script>
+      ";
+    }
+    else{
+       echo "<script>
+      alert('delete unsuccessful');
+      window.location.href='superadmin.php';
+      </script>
+      ";
+      }
+      }
 		  ?>
                 
 					

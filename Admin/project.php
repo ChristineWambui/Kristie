@@ -92,7 +92,19 @@ desired effect
            <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
-              <span class="label label-warning">10</span>
+              <span class="label label-warning">
+             <?php
+              foreach($_SESSION as $username){
+			    $MyUsername = $username;
+			 }
+			 
+			 $retrieve = "SELECT COUNT(message) FROM message_user WHERE username = '$MyUsername'";
+			 $result = mysqli_query($connection,$retrieve);
+			 $row = mysqli_fetch_array($result);
+			 echo $row[0];
+			  
+			  ?>
+            </span>
             </a>
             <ul class="dropdown-menu">
               <li class="header">You have 10 notifications</li>
@@ -144,6 +156,34 @@ desired effect
                 <!-- inner menu: contains the messages -->
                 <ul class="menu">
                   <li><!-- start message -->
+                  <?php 
+				  
+			
+          function retrievemessage()
+          {
+            
+          
+          foreach($_SESSION as $username){
+          $MyUsername = $username;};
+          global $connection;
+          $select="SELECT message FROM message_user WHERE username = '$MyUsername'";
+          $selectresult=mysqli_query($connection,$select);
+          $result=array();
+          if(mysqli_num_rows($selectresult)>0)
+          {
+            while($row=mysqli_fetch_array($selectresult))
+              {
+                $result[]=$row;
+              }
+          return $result;
+          }
+
+          }
+          
+      
+      foreach(retrievemessage() as $sms)
+        {
+          ?>
                     <a href="#">
                       <div class="pull-left">
                         <!-- User Image -->
@@ -152,7 +192,7 @@ desired effect
                       <!-- Message title and timestamp -->
                       <h4>
                         Support Team
-                        <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                        <small><i class="fa fa-clock-o"></i><?php echo $sms['message']; ?></small>
                       </h4>
                       <!-- The message -->
                       <p>Why not buy a new awesome theme?</p>

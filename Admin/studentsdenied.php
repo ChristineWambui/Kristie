@@ -307,6 +307,7 @@ desired effect
 		  if (projectdenied()>0)
 		  {
                    foreach(projectdenied() as $denied)
+				     $admission = $denied['admission'];
             
                { 
 			   ?>
@@ -315,22 +316,96 @@ desired effect
                  <tr>
         
                     <td><?php echo $denied['id'];?></td>
-                    <td><?php echo $denied['admission']; ?></td>
+                    <td><?php echo $denied['admission'];; ?></td>
                     <td><?php echo $denied['studentname']; ?></td>
                     <td><?php echo $denied['datetime']; ?></td>
-					<td>Project</td>
-					<td><button class="btn btn-danger">Access Performance Sheet</button></td>
+					<td>
+					<?php switch($denied['departmentid'])
+					{
+						case 1:
+						echo 'Project';
+						break;
+						
+						case 2:
+						echo 'Exams';
+						break;
+						
+						case 3:
+						echo 'Accounts';
+						break;
+						
+						default:
+						echo 'Adminstration';
+					}
+					?>
+					 </td>
+					<td><a href="<?php echo $denied['admission']; ?>" type="button" class="btn btn-danger" data-toggle="modal" data-target="#Modal<?php echo $denied['admission'];?>">access performance sheet</a></td>
 					</tr>
           <?php
-		  }
-		  }
+		  
+		   if (progress($denied['admission'])>0)
+		  {
+                   foreach(progress($denied['admission']) as $progress)
+            
+              {
 		  ?>
                 
 					
             </div>
           </div>
         </div>
+			
+		    <div id="Modal<?php echo $denied['admission'];?>" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+          
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Project Progress</h4>
+                </div>
+                <div class="modal-body">
+              <form action="project.php" method="POST">
+            <div class="form-group">
+              <label for="fullname">Admission:</label>
+              <input type="text" name="admission" value="<?php echo $progress['admission'];?>" required="" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+              <label for="course">FullName:</label>
+              <input type="text" name="fullname" value="<?php echo $progress['fullname'];?>" required="" class="form-control" id="pwd">
+            </div>
+            
+              <div class="form-group">
+              <label for="pwd">Functionality:</label>
+              <input type="text"  name="func" required="" value="<?php echo $progress['functionality'];?>" class="form-control" id="pwd">
+            </div>
+            <div class="form-group">
+              <label for="password">User Interface:</label>
+              <input style="color:black;" name="UI" type="text" value="<?php echo $progress['userinterface'];?>" name="pwd" required="" class="form-control" id="pwd">
+            </div>
+			<div class="form-group">
+              <label for="password">Message:</label>
+              <input style="color:black;" type="text" name="message" value="<?php echo $progress['message'];?>"required="" class="form-control" id="pwd">
 
+            </div>
+			
+			<a href="#" onclick="window.print();"><i class="glyphicon glyphicon-print"></i>Print</a>
+       
+          </form>
+                </div>
+
+          
+            </div>
+          </div>
+        </div>
+       <?php
+			   }
+		  
+        }
+		  } 
+		  
+		  }
+		  ?>
 
 				</tr>
         
